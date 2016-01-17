@@ -1,4 +1,6 @@
-# Snabbdom
+# Raskdom
+
+> Note: Raskdom is a port of [Snabbdom](https://github.com/paldepind/snabbdom) that checks for removed classes, styles and props to ensure that no artefacts from a previous render are left behind. All other features are identical and as such the documentation here is unchanged.
 
 A virtual DOM library with focus on simplicity, modularity, powerful features
 and performance.
@@ -298,6 +300,8 @@ h('span', {
   style: {border: '1px solid #bada55', color: '#c0ffee', fontWeight: 'bold'}
 }, 'Say my name, and every colour illuminates');
 ```
+
+> Note: The following does not apply to Raskdom since the Raskdom fork will always ensure that undefined classes, styles and props are removed.
 
 Note that the style module does not remove style attributes if they are removed
 as properties from the style object. To remove a style you should instead set
