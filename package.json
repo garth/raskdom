@@ -1,6 +1,6 @@
 {
   "name": "raskdom",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "A virtual DOM library with focus on simplicity, modularity, powerful features and performance.",
   "main": "snabbdom.js",
   "directories": {
@@ -10,8 +10,10 @@
   "dependencies": {},
   "devDependencies": {
     "benchmark": "^1.0.0",
+    "browserify": "^13.0.0",
     "fake-raf": "0.0.1",
-    "knuth-shuffle": "^1.0.1"
+    "knuth-shuffle": "^1.0.1",
+    "testem": "^1.0.2"
   },
   "scripts": {
     "test": "testem"

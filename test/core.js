@@ -107,6 +107,22 @@ describe('snabbdom', function() {
       patch(vnode0, h('a', {props: {src: 'http://localhost/'}}));
       assert.equal(elm.src, 'http://localhost/');
     });
+    it('can create an element created inside an iframe', function(done) {
+      // Only run if srcdoc is supported.
+      var frame = document.createElement('iframe');
+      if (typeof frame.srcdoc !== 'undefined') {
+        frame.srcdoc = "<div>Thing 1</div>";
+        frame.onload = function() {
+          patch(frame.contentDocument.body.querySelector('div'), h('div', 'Thing 2'));
+          assert.equal(frame.contentDocument.body.querySelector('div').textContent, 'Thing 2');
+          frame.remove();
+          done();
+        };
+        document.body.appendChild(frame);
+      } else {
+        done();
+      }
+    });
   });
   describe('pathing an element', function() {
     it('changes the elements classes', function() {
@@ -431,6 +447,33 @@ describe('snabbdom', function() {
         assert.deepEqual(map(inner, elm.children), ['One', 'Two', 'Three']);
         patch(vnode1, vnode2);
         assert.deepEqual(map(inner, elm.children), ['One', 'Three']);
+      });
+      it('removes a single text node', function() {
+        var vnode1 = h('div', 'One');
+        var vnode2 = h('div');
+        patch(vnode0, vnode1);
+        assert.equal(elm.textContent, 'One');
+        patch(vnode1, vnode2);
+        assert.equal(elm.textContent, '');
+      });
+      it('removes a single text node when children are updated', function() {
+        var vnode1 = h('div', 'One');
+        var vnode2 = h('div', [ h('div', 'Two'), h('span', 'Three') ]);
+        patch(vnode0, vnode1);
+        assert.equal(elm.textContent, 'One');
+        patch(vnode1, vnode2);
+        console.log(elm.childNodes);
+        assert.deepEqual(map(prop('textContent'), elm.childNodes), ['Two', 'Three']);
+      });
+      it('removes a text node among other elements', function() {
+        var vnode1 = h('div', [ 'One', h('span', 'Two') ]);
+        var vnode2 = h('div', [ h('div', 'Three')]);
+        patch(vnode0, vnode1);
+        assert.deepEqual(map(prop('textContent'), elm.childNodes), ['One', 'Two']);
+        patch(vnode1, vnode2);
+        assert.equal(elm.childNodes.length, 1);
+        assert.equal(elm.childNodes[0].tagName, 'DIV');
+        assert.equal(elm.childNodes[0].textContent, 'Three');
       });
       it('reorders elements', function() {
         var vnode1 = h('div', [h('span', 'One'), h('div', 'Two'), h('b', 'Three')]);

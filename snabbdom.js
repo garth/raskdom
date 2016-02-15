@@ -1,5 +1,5 @@
 // jshint newcap: false
-/* global require, module, document, Element */
+/* global require, module, document, Node */
 'use strict';
 
 var VNode = require('./vnode');
@@ -195,9 +195,12 @@ function init(modules) {
       if (isDef(oldCh) && isDef(ch)) {
         if (oldCh !== ch) updateChildren(elm, oldCh, ch, insertedVnodeQueue);
       } else if (isDef(ch)) {
+        if (isDef(oldVnode.text)) elm.textContent = '';
         addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue);
       } else if (isDef(oldCh)) {
         removeVnodes(elm, oldCh, 0, oldCh.length - 1);
+      } else if (isDef(oldVnode.text)) {
+        elm.textContent = '';
       }
     } else if (oldVnode.text !== vnode.text) {
       elm.textContent = vnode.text;
@@ -211,7 +214,7 @@ function init(modules) {
     var i;
     var insertedVnodeQueue = [];
     for (i = 0; i < cbs.pre.length; ++i) cbs.pre[i]();
-    if (oldVnode instanceof Element) {
+    if (oldVnode.nodeType === Node.ELEMENT_NODE) {
       if (oldVnode.parentElement !== null) {
         createElm(vnode, insertedVnodeQueue);
         oldVnode.parentElement.replaceChild(vnode.elm, oldVnode);
